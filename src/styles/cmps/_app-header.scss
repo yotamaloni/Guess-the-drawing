@@ -1,0 +1,11 @@
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: yellow;
+
+    .main-nav {
+        display: flex;
+        gap: 10px;
+    }
+}
