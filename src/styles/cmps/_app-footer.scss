@@ -1,3 +1,7 @@
 .app-footer {
-    background-color: yellow;
+    background-color: $clr2;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

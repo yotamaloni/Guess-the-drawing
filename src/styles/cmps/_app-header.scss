@@ -1,8 +1,9 @@
 .app-header {
     display: flex;
+    font-weight: 600;
     align-items: center;
     justify-content: flex-start;
-    background-color: yellow;
+    background-color: $clr2;
 
     .main-nav {
         display: flex;

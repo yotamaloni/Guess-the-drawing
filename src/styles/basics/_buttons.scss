@@ -1,32 +1,40 @@
 button {
   cursor: pointer;
-}
-
-button.no-background {
-  background: rgba(0, 0, 0, 0);
+  background: none;
   border: none;
   border-radius: 3px;
-  color: $clr3;
-  &:hover {
-    background-color: darken($clr1, 7%);
-  }
-}
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: auto 0;
+  margin: 0;
+  height: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color, 0.2s;
+  margin-inline-end: 10px;
 
-button.add-list {
-  &:hover {
+  &.done {
+    background-color: $clr3;
+    color: white;
+
+
+    &:hover {
+      background-color: lighten($color: $clr3, $amount: 10%)
+    }
+  }
+
+  &.delete {
+    color: white;
+
     background-color: $clr1;
-  }
-}
 
-button.add-btn {
-  margin-right: 4px;
-  background-color: #0079bf;
-  border: none;
-  box-shadow: none;
-  color: #fff;
-  border-radius: 3px;
-  padding: 6px 12px;
-  &:hover {
-    background-color: darken(#0079bf, 5%);
+    &:hover {
+      background-color: darken($color: $clr1, $amount: 10%)
+    }
   }
+
+
+
 }
