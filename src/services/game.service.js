@@ -4,7 +4,8 @@ import { utilService } from "./util.service";
 
 export const gameService = {
   getGame,
-  removeGame
+  removeGame,
+  getGameById,
 };
 
 async function getGame(player) {
@@ -15,5 +16,10 @@ async function getGame(player) {
 
 async function removeGame(gameId) {
   const game = await httpService.delete(`game/${gameId}`);
+  return game;
+}
+
+async function getGameById(gameId) {
+  const game = await httpService.get(`game/${gameId}`);
   return game;
 }

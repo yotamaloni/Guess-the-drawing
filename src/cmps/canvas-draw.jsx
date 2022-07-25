@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState, } from "react";
 import { eventBusService } from "../services/event-bus.service";
-export function Canvas(props) {
+import { socketService } from "../services/socket.service";
+export function CanvasDraw(props) {
 
   const canvasRef = useRef(null)
   const contextRef = useRef(null)
-  // const [isDrawing, setIsDrawing] = useState(false)
   var isDrawing = false
   var removeEventEraseDrawing = null
 
@@ -33,6 +33,7 @@ export function Canvas(props) {
     contextRef.current.beginPath();
     contextRef.current.moveTo(offsetX, offsetY);
     isDrawing = true
+    socketService.emit('start-drawing', { offsetX, offsetY })
   }
 
   const draw = ({ nativeEvent }) => {
@@ -42,11 +43,14 @@ export function Canvas(props) {
     const { offsetX, offsetY } = nativeEvent;
     contextRef.current.lineTo(offsetX, offsetY);
     contextRef.current.stroke();
+    socketService.emit('draw', { offsetX, offsetY })
+
   }
 
   const finishDrawing = () => {
     contextRef.current.closePath()
     isDrawing = false
+    socketService.emit('finish-drawing')
 
   }
 
@@ -55,6 +59,7 @@ export function Canvas(props) {
     const context = canvas.getContext("2d")
     context.fillStyle = "#FFF"
     context.fillRect(0, 0, canvas.width, canvas.height)
+    socketService.emit('clear-canvas')
   }
 
   return (

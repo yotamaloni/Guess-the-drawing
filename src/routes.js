@@ -8,15 +8,15 @@ const routes = [
     id: 1,
   },
   {
-    path: "/:gameId/draw",
+    path: "/:gameId/:type",
     element: <DrawApp />,
     id: 2,
   },
-  {
-    path: "/:gameId/guess",
-    element: <GuessApp />,
-    id: 3,
-  },
+  // {
+  //   path: "/:gameId/:type",
+  //   element: <GuessApp />,
+  //   id: 3,
+  // },
 ];
 
 export default routes;

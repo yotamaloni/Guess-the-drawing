@@ -1,43 +1,50 @@
 import React, { useEffect, useRef, useState, } from "react";
-
+import { eventBusService } from "../services/event-bus.service";
+import { socketService } from "../services/socket.service";
 export function CanvasGuess(props) {
 
   const canvasRef = useRef(null)
   const contextRef = useRef(null)
-  // const [isDrawing, setIsDrawing] = useState(false)
-  let isDrawing = false
+  var isDrawing = false
+  var removeEventEraseDrawing = null
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    // canvas.width = window.innerWidth * 2
-    // canvas.height = window.innerHeight * 2
-    // canvas.style.width = `${window.innerWidth}px`
-    // canvas.style.height = `${window.innerHeight}px`
+    setCanvas()
+    socketService.on('start-drawing', (pos) => { startDrawing(pos) })
+    socketService.on('draw', (pos) => { draw(pos) })
+    socketService.on('finish-drawing', finishDrawing)
+    socketService.on('clear-canvas', clearCanvas)
+    return () => {
+      socketService.off('start-drawing')
+      socketService.off('draw')
+      socketService.off('finish-drawing')
+      socketService.off('clear-canvas')
+    }
+  }, [])
 
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
+  const setCanvas = () => {
+    const canvas = canvasRef.current
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
     const context = canvas.getContext("2d")
-    // context.scale(2, 2)
     context.lineCap = "round"
     context.strokeStyle = "black"
     context.lineWidth = 5
     contextRef.current = context
-  })
+  }
 
-  const startDrawing = ({ nativeEvent }) => {
-    const { offsetX, offsetY } = nativeEvent;
+  const startDrawing = (pos) => {
+    const { offsetX, offsetY } = pos;
     contextRef.current.beginPath();
     contextRef.current.moveTo(offsetX, offsetY);
     isDrawing = true
   }
 
-  const draw = ({ nativeEvent }) => {
+  const draw = (pos) => {
     if (!isDrawing) {
       return;
     }
-    const { offsetX, offsetY } = nativeEvent;
+    const { offsetX, offsetY } = pos;
     contextRef.current.lineTo(offsetX, offsetY);
     contextRef.current.stroke();
   }
@@ -48,10 +55,10 @@ export function CanvasGuess(props) {
 
   }
 
-  const onClearCanvas = () => {
+  const clearCanvas = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d")
-    context.fillStyle = "white"
+    context.fillStyle = "#FFF"
     context.fillRect(0, 0, canvas.width, canvas.height)
   }
 

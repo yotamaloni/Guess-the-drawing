@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./styles/styles.scss";
 import { AppHeader } from './cmps/app-header';
 import { AppFooter } from './cmps/app-footer';
+import { UserMsg } from './cmps/user-msg';
 import routes from './routes';
 
 export function RootCmp() {
@@ -17,6 +18,7 @@ export function RootCmp() {
         </main>
         <AppFooter />
       </Router>
+      <UserMsg />
     </div >
   );
 }
