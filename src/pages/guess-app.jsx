@@ -8,7 +8,8 @@ export const GuessApp = () => {
     return (
         <section className="draw-app">
             <div className='canvas-container'>
-                <CanvasGuess />
+                {/* <CanvasGuess /> */}
+                GESS
             </div>
         </section>
     )

@@ -15,7 +15,7 @@ export const useForm = (initialState, cb = () => { }) => {
         setFields(prevFields => ({ ...prevFields, [field]: value }))
     }
 
-    const register = (field, type = 'text', placeholder) => {
+    const register = (field, type = 'text', placeholder,require) => {
 
         return {
             name: field,
@@ -23,6 +23,7 @@ export const useForm = (initialState, cb = () => { }) => {
             value: fields[field] || '',
             onChange: handleChange,
             placeholder,
+            require,
             type
         }
 
