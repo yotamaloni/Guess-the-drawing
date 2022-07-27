@@ -8,5 +8,19 @@
     .main-nav {
         display: flex;
         gap: 10px;
+        font-family: pacifico;
+        font-size: 1.2rem;
+    }
+
+    .user-container {
+        >* {
+            cursor: pointer;
+        }
+
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     }
 }

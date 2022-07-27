@@ -7,8 +7,6 @@
 }
 
 ::selection {
-  background-color: lighten($clr4, 20%);
-  color: $clr2;
 }
 
 html {
@@ -39,20 +37,23 @@ img {
   width: 100%;
 }
 
-// h1,h2,h3,h4,h5,h6 {
-//     line-height: 1.2;
-//     margin: 0 0 em(20px, 50px);
-//     font-family: caveat, serif;
-//     font-weight: 400;
-// }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.2;
+  margin: 0;
+}
 
 h1 {
   font-size: rem(50px);
 }
 
 p {
-  margin: 0 0 1em;
   max-width: 50ch;
+  margin: 0;
 }
 
 .remove-btn {
@@ -89,17 +90,26 @@ p {
 
 input {
   border: none;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  outline: 1px solid gray;
   font-family: inherit;
   font-size: 1rem;
   border-radius: 3px;
   height: 30px;
+
   &:focus {
-      outline: 1px solid blue;
+    outline: 3px solid lightblue;
   }
 }
 
 a {
   text-decoration: none;
   color: inherit;
+}
+
+.close-btn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: gray;
+  cursor: pointer;
 }

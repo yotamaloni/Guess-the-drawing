@@ -19,12 +19,10 @@ export const DrawApp = () => {
     const navigate = useNavigate();
     const { gameId, type } = useParams()
     const dispatch = useDispatch()
-    const { user, isGameDone } = useSelector((state) => state)
-    console.log("🟡 ~ isGameDone", isGameDone)
+    const { isGameDone } = useSelector((state) => state.isGameDone)
     const { setGameDone } = bindActionCreators(actionCreators, dispatch)
 
     const [isStart, setIsStart] = useState(false)
-    const [isDone, setIsDone] = useState(false)
     const [game, setGame] = useState(null)
     const [word, setWord] = useState('')
 
@@ -78,7 +76,7 @@ export const DrawApp = () => {
 
     const onSubmitWord = (ev) => {
         ev.preventDefault()
-        if (word === game.word) {
+        if (word.toLocaleLowerCase() === game.word) {
             socketService.emit('player-won', gameId)
             eventBusService.emit('user-msg', { txt: 'You WIN!', class: 'success' })
             setGameDone(true)
@@ -89,7 +87,6 @@ export const DrawApp = () => {
 
     const [register] = useForm({
     }, updateWordGuess)
-
     if (isGameDone) return (
         <section className="draw-app">
             <StartForm />
@@ -104,7 +101,7 @@ export const DrawApp = () => {
         <section className="draw-app">
             {type === 'draw' ?
                 <React.Fragment>
-                    <div>Your word is {game?.word}</div>
+                    <h2 className='word-description'>Your word is <span>{game?.word}</span></h2>
                     <div className='canvas-container'>
                         <CanvasDraw isDrawer={true} />
                     </div>
@@ -117,11 +114,11 @@ export const DrawApp = () => {
                     <div className='canvas-container'>
                         <CanvasGuess isDrawer={true} />
                     </div>
-                    <form onSubmit={(ev) => onSubmitWord(ev)}>
+                    <form className='actions' onSubmit={(ev) => onSubmitWord(ev)}>
                         <label >
                             <input ref={inputRef} {...register('word', undefined, 'Enter your guess...')} />
-                            <button className='done'>Submit</button>
                         </label>
+                        <button className='done'>Submit</button>
                     </form >
                 </React.Fragment>
             }

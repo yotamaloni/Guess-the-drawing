@@ -4,4 +4,33 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    padding: 20px 0;
+
+    .icons-container {
+        display: flex;
+        gap: 40px;
+
+        >* {
+            font-size: 1.3rem;
+            height: 30px;
+            width: 30px;
+
+            >* {
+                cursor: pointer;
+                height: 30px;
+                width: 30px;
+            }
+
+            .linkedin {
+                color: #0A66C2;
+                border-radius: 50%;
+            }
+
+            .my-site {
+                color: rgb(114, 49, 77);
+            }
+
+        }
+    }
 }

@@ -1,5 +1,4 @@
 .root-cmp {
-    height: 100vh;
 
     .app-header {
         height: $header-height;
@@ -14,7 +13,29 @@
     }
 
     main {
-        height: calc(100vh - $header-height - $footer-height);
+        height: calc(100vh - $header-height);
     }
+}
 
+@media (min-width: $break-narrow) {
+    .root-cmp {
+        height: 100vh;
+
+        .app-header {
+            height: $header-height;
+        }
+
+        .app-footer {
+            height: $footer-height;
+        }
+
+        >* {
+            padding: 0 20px;
+        }
+
+        main {
+            padding: 20px;
+            height: calc(100vh - $header-height - $footer-height);
+        }
+    }
 }
