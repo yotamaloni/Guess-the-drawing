@@ -1,12 +1,24 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux"
+import { bindActionCreators } from "redux";
+import { actionCreators } from "../store/action"
 import { useForm } from "../hooks/useForm"
 import { gameService } from '../services/game.service';
 
 export const StartForm = () => {
+
     const inputRef = useRef(null);
     const navigate = useNavigate();
+
     const [username, setUsername] = useState('')
+
+    const user = useSelector((state) => state.user)
+    const dispatch = useDispatch()
+    const { setUser, setGameDone } = bindActionCreators(actionCreators, dispatch)
+
+
+
 
     const updateUsername = (value) => {
         setUsername(value.username)
@@ -15,7 +27,6 @@ export const StartForm = () => {
     const [register] = useForm({
     }, updateUsername)
 
-
     const onPlayerEnter = async (type) => {
         if (!username) {
             inputRef.current.focus()
@@ -23,6 +34,8 @@ export const StartForm = () => {
         }
         try {
             const game = await gameService.getGame({ username, type })
+            setUser({ username })
+            setGameDone({ isGameDone: false })
             navigate(`/${game._id}/${type}`);
 
         } catch (err) {

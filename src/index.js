@@ -1,5 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 import { RootCmp } from "./root-cmp";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
@@ -8,7 +10,9 @@ import "./styles/styles.scss";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RootCmp />
+    <Provider store={store}>
+      <RootCmp />
+    </Provider>
   </React.StrictMode>
 );
 

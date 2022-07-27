@@ -1,6 +1,5 @@
 import { AppHome } from "./pages/app-home";
 import { DrawApp } from "./pages/draw-app";
-import { GuessApp } from "./pages/guess-app";
 const routes = [
   {
     path: "/",
@@ -12,11 +11,6 @@ const routes = [
     element: <DrawApp />,
     id: 2,
   },
-  // {
-  //   path: "/:gameId/:type",
-  //   element: <GuessApp />,
-  //   id: 3,
-  // },
 ];
 
 export default routes;

@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { StartForm } from "../cmps/start-form";
 
+
 export const AppHome = () => {
+
 
     const [isFormOpen, setIsFormOpen] = useState(false)
 
     const onToggleForm = () => {
         setIsFormOpen(!isFormOpen)
     }
+
+   
 
     return (
         <section className="app-home">
