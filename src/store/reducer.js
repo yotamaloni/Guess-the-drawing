@@ -9,7 +9,6 @@ export function reducer(state = initialState, action) {
 
   switch (action.type) {
     case "SET_USER":
-      console.log('sdf');
       newState = { ...state, user: { ...action.user } };
       break;
     case "SET_GAME":

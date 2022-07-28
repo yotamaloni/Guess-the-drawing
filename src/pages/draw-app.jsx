@@ -28,21 +28,28 @@ export const DrawApp = () => {
 
 
     useEffect(() => {
+        console.log('IN DRAW UP MOUTHING');
+
         socketService.emit('game-watch', gameId)
         addEventListenerByGame()
         socketService.on('player-leave', async () => {
             console.log('PLAYER LEFT!!');
-            // await gameService.removeGame(gameId)
-            navigate(`/`);
+            await gameService.removeGame(gameId)
+            eventBusService.emit('user-msg', { txt: 'Player Left - the game is terminate', class: 'danger' })
+            setGameDone(true)
+            setTimeout(() => {
+                navigate(`/`);
+            }, 3000);
         })
         socketService.on('player-won', () => {
             eventBusService.emit('user-msg', { txt: 'Player guess won', class: 'success' })
             setGameDone(true)
         })
         return () => {
-            // socketService.emit('player-leave')
-            socketService.off('player-in')
+            console.log('UNMOUNT');
             socketService.off('player-leave')
+            socketService.emit('player-leave')
+            socketService.off('player-in')
             socketService.off('player-won')
         }
     }, []);

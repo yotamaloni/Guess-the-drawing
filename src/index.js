@@ -9,11 +9,11 @@ import "./styles/styles.scss";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Provider store={store}>
       <RootCmp />
     </Provider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // If you want your app to work offline and load faster, you can change

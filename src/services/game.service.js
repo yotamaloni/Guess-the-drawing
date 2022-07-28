@@ -15,8 +15,7 @@ async function getGame(player) {
 }
 
 async function removeGame(gameId) {
-  const game = await httpService.delete(`game/${gameId}`);
-  return game;
+  return await httpService.delete(`game/${gameId}`);
 }
 
 async function getGameById(gameId) {

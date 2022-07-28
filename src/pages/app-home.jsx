@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StartForm } from "../cmps/start-form";
 
 
 export const AppHome = () => {
 
-
+    useEffect(() => {
+        console.log('IN HOME MOUTHING');
+    }, [])
     const [isFormOpen, setIsFormOpen] = useState(false)
 
     const onToggleForm = () => {
         setIsFormOpen(!isFormOpen)
     }
-
 
 
     return (
@@ -19,7 +20,7 @@ export const AppHome = () => {
                 <p className="game-description">
                     If you are a talented painter or alternatively, if
                     you have a special talent for identifying paintings -
-                    this is the game for you! This game will test how talented you really are
+                    this is the game for you! <span>Guess The Drawing</span>  will test how talented you really are.
 
                 </p>
                 <div className="actions">
