@@ -26,6 +26,10 @@
         background-color: #FFF;
         height: calc(100% - 40px - 20px);
         border: 1px solid black;
+        max-width: 500px;
+        display: flex;
+        justify-self: center;
+        align-self: center;
     }
 
     .actions {
