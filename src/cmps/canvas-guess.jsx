@@ -6,7 +6,6 @@ export function CanvasGuess(props) {
   const canvasRef = useRef(null)
   const contextRef = useRef(null)
   var isDrawing = false
-  var removeEventEraseDrawing = null
 
   useEffect(() => {
     setCanvas()
@@ -34,8 +33,8 @@ export function CanvasGuess(props) {
   }
 
   const startDrawing = (pos) => {
-    const { offsetX, offsetY } = pos;
     contextRef.current.beginPath();
+    const { offsetX, offsetY } = getAbsolutePos(pos)
     contextRef.current.moveTo(offsetX, offsetY);
     isDrawing = true
   }
@@ -44,7 +43,7 @@ export function CanvasGuess(props) {
     if (!isDrawing) {
       return;
     }
-    const { offsetX, offsetY } = pos;
+    const { offsetX, offsetY } = getAbsolutePos(pos)
     contextRef.current.lineTo(offsetX, offsetY);
     contextRef.current.stroke();
   }
@@ -60,6 +59,15 @@ export function CanvasGuess(props) {
     const context = canvas.getContext("2d")
     context.fillStyle = "#FFF"
     context.fillRect(0, 0, canvas.width, canvas.height)
+  }
+
+  const getAbsolutePos = (pos) => {
+    const canvas = canvasRef.current
+    const offsetX = pos.x * canvas.offsetWidth
+    const offsetY = pos.y * canvas.offsetHeight
+    return {
+      offsetX, offsetY
+    }
   }
 
   return (

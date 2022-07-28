@@ -28,25 +28,26 @@ export const DrawApp = () => {
 
 
     useEffect(() => {
-        console.log('IN DRAW UP MOUTHING');
 
         socketService.emit('game-watch', gameId)
+
         addEventListenerByGame()
+
         socketService.on('player-leave', async () => {
-            console.log('PLAYER LEFT!!');
-            await gameService.removeGame(gameId)
-            eventBusService.emit('user-msg', { txt: 'Player Left - the game is terminate', class: 'danger' })
+            eventBusService.emit('user-msg', { txt: 'Player Left - Game over', class: 'danger' })
             setGameDone(true)
             setTimeout(() => {
                 navigate(`/`);
             }, 3000);
         })
+
         socketService.on('player-won', () => {
             eventBusService.emit('user-msg', { txt: 'Player guess won', class: 'success' })
             setGameDone(true)
         })
+
         return () => {
-            console.log('UNMOUNT');
+            removeGame(gameId)
             socketService.off('player-leave')
             socketService.emit('player-leave')
             socketService.off('player-in')
@@ -54,20 +55,24 @@ export const DrawApp = () => {
         }
     }, []);
 
+    const removeGame = async () => {
+        await gameService.removeGame(gameId)
+    }
+
     const addEventListenerByGame = async () => {
-        const game = await gameService.getGameById(gameId)
-        if (game.players.length < 2) {
+        const newGame = await gameService.getGameById(gameId)
+        if (newGame.players.length < 2) {
             socketService.on('player-in', async () => {
-                startGame(game)
+                startGame()
             })
         } else {
             socketService.emit('player-in', gameId)
-            startGame(game)
+            startGame()
         }
+        setGame(newGame)
     }
 
-    const startGame = (game) => {
-        setGame(game)
+    const startGame = () => {
         setIsStart(true)
     }
 
@@ -101,7 +106,7 @@ export const DrawApp = () => {
     )
     if (!isStart) return (
         <section className="draw-app">
-            <h1 className='wait-title'>WAIT UNTIL THE NEW PLAYER TO JOIN</h1>
+            <h2 className='wait-title'>WAIT UNTIL THE NEW PLAYER TO JOIN</h2>
         </section>
     )
     return (

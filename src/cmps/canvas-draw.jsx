@@ -33,7 +33,8 @@ export function CanvasDraw(props) {
     contextRef.current.beginPath();
     contextRef.current.moveTo(offsetX, offsetY);
     isDrawing = true
-    socketService.emit('start-drawing', { offsetX, offsetY })
+    const pos = getRelativePos(offsetX, offsetY)
+    socketService.emit('start-drawing', pos)
   }
 
   const draw = ({ nativeEvent }) => {
@@ -43,8 +44,8 @@ export function CanvasDraw(props) {
     const { offsetX, offsetY } = nativeEvent;
     contextRef.current.lineTo(offsetX, offsetY);
     contextRef.current.stroke();
-    socketService.emit('draw', { offsetX, offsetY })
-
+    const pos = getRelativePos(offsetX, offsetY)
+    socketService.emit('draw', pos)
   }
 
   const finishDrawing = () => {
@@ -60,6 +61,15 @@ export function CanvasDraw(props) {
     context.fillStyle = "#FFF"
     context.fillRect(0, 0, canvas.width, canvas.height)
     socketService.emit('clear-canvas')
+  }
+
+  const getRelativePos = (offsetX, offsetY) => {
+    const canvas = canvasRef.current
+    const x = offsetX / canvas.offsetWidth
+    const y = offsetY / canvas.offsetHeight
+    return {
+      x, y
+    }
   }
 
   return (

@@ -5,7 +5,6 @@ import { StartForm } from "../cmps/start-form";
 export const AppHome = () => {
 
     useEffect(() => {
-        console.log('IN HOME MOUTHING');
     }, [])
     const [isFormOpen, setIsFormOpen] = useState(false)
 
