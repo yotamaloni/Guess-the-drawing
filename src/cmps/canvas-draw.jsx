@@ -67,7 +67,11 @@ export function CanvasDraw(props) {
       onMouseDown={startDrawing}
       onMouseUp={finishDrawing}
       onMouseMove={draw}
+      onTouchStart={startDrawing}
+      onTouchEnd={finishDrawing}
+      onTouchMove={draw}
       ref={canvasRef}
     />
   );
 }
+
