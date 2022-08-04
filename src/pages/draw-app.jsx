@@ -19,8 +19,8 @@ export const DrawApp = () => {
     const navigate = useNavigate();
     const { gameId, type } = useParams()
     const dispatch = useDispatch()
-    const { isGameDone } = useSelector((state) => state.isGameDone)
-    const { setGameDone } = bindActionCreators(actionCreators, dispatch)
+    // const isGameDone = useSelector((state) => state.isGameDone)
+    // const { setGameDone } = bindActionCreators(actionCreators, dispatch)
 
     const [isStart, setIsStart] = useState(false)
     const [game, setGame] = useState(null)
@@ -35,7 +35,6 @@ export const DrawApp = () => {
 
         socketService.on('player-leave', async () => {
             eventBusService.emit('user-msg', { txt: 'Player Left - Game over', class: 'danger' })
-            setGameDone(true)
             setTimeout(() => {
                 navigate(`/`);
             }, 3000);
@@ -43,7 +42,8 @@ export const DrawApp = () => {
 
         socketService.on('player-won', () => {
             eventBusService.emit('user-msg', { txt: 'Player guess won', class: 'success' })
-            setGameDone(true)
+            navigate(`/start`);
+
         })
 
         return () => {
@@ -53,7 +53,7 @@ export const DrawApp = () => {
             socketService.off('player-in')
             socketService.off('player-won')
         }
-    }, []);
+    }, [navigate]);
 
     const removeGame = async () => {
         await gameService.removeGame(gameId)
@@ -91,7 +91,8 @@ export const DrawApp = () => {
         if (word.toLocaleLowerCase() === game.word) {
             socketService.emit('player-won', gameId)
             eventBusService.emit('user-msg', { txt: 'You WIN!', class: 'success' })
-            setGameDone(true)
+            navigate('/start')
+            // setGameDone(true)
         } else {
             eventBusService.emit('user-msg', { txt: 'Wrong..TRY AGAIN', class: 'danger' })
         }
@@ -99,14 +100,16 @@ export const DrawApp = () => {
 
     const [register] = useForm({
     }, updateWordGuess)
-    if (isGameDone) return (
-        <section className="draw-app">
-            <StartForm />
-        </section>
-    )
+
+
+    // if (isGameDone) return (
+    //     <section className="draw-app">
+    //         <StartForm />
+    //     </section>
+    // )
     if (!isStart) return (
         <section className="draw-app">
-            <h2 className='wait-title'>WAIT UNTIL THE NEW PLAYER TO JOIN</h2>
+            <h2 className='wait-title'>WAIT UNTIL PLAYER TO JOIN YOU</h2>
         </section>
     )
     return (

@@ -52,9 +52,8 @@
 @media (max-width: $break-narrow) {
     .app-home {
         .left-container {
-            height: calc(50% - 20px);
+            height: calc(50%);
         }
-
         .img-container {
             height: calc(50% - 20px);
             font-size: 10rem;

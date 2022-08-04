@@ -28,8 +28,8 @@ export function CanvasDraw(props) {
     contextRef.current = context
   }
 
-  const startDrawing = ({ nativeEvent }) => {
-    const { offsetX, offsetY } = nativeEvent;
+  const startDrawing = (ev) => {
+    const { offsetX, offsetY } = ev.nativeEvent;
     contextRef.current.beginPath();
     contextRef.current.moveTo(offsetX, offsetY);
     isDrawing = true
@@ -37,14 +37,24 @@ export function CanvasDraw(props) {
     socketService.emit('start-drawing', pos)
   }
 
-  const draw = ({ nativeEvent }) => {
+  const draw = (ev) => {
+    ev.stopPropagation()
     if (!isDrawing) {
       return;
     }
-    const { offsetX, offsetY } = nativeEvent;
-    contextRef.current.lineTo(offsetX, offsetY);
+    var posX, posY
+    if (ev.type === "touchmove") {
+      const { clientX, clientY } = ev.touches[0];
+      posX = clientX - 20
+      posY = clientY - 120
+    } else {
+      const { offsetX, offsetY } = ev.nativeEvent;
+      posX = offsetX
+      posY = offsetY
+    }
+    contextRef.current.lineTo(posX, posY);
     contextRef.current.stroke();
-    const pos = getRelativePos(offsetX, offsetY)
+    const pos = getRelativePos(posX, posY)
     socketService.emit('draw', pos)
   }
 
@@ -84,4 +94,3 @@ export function CanvasDraw(props) {
     />
   );
 }
-

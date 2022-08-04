@@ -41,7 +41,7 @@ export const StartForm = (props) => {
             const game = await gameService.getGame({ username, type })
             const { closeModal } = props
             setUser({ username })
-            setGameDone({ isGameDone: false })
+            setGameDone(false)
             if (closeModal) closeModal()
             navigate(`/${game._id}/${type}`);
 

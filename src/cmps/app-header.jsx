@@ -15,29 +15,24 @@ export const AppHeader = () => {
     const user = useSelector((state) => state.user)
     const { setUser } = bindActionCreators(actionCreators, dispatch)
 
-    const toggleForm = (isShutDown = null) => {
-        if (isShutDown === true) {
-            setIsFormOpen(false)
-            return
-        }
-        setIsFormOpen(!isFormOpen)
-    }
 
     return (
         <section className="app-header">
             <div className="main-nav">
-                <NavLink onClick={() => toggleForm(true)} to="/">Guess The Drawing</NavLink>
+                <NavLink to="/">Guess The Drawing</NavLink>
             </div>
             <div className="user-container">
                 {user?.username ?
-                    <div onClick={() => toggleForm()} className="icon-container">
+                    <NavLink className="icon-container" to="/start">
                         <MemberIcon username={user.username} />
-                    </div>
+                    </NavLink>
                     :
-                    <div onClick={() => toggleForm()} className="icon-container"><AccountCircleOutlinedIcon /></div>
+                    <NavLink className="icon-container" to="/start">
+                        <div className="icon-container"><AccountCircleOutlinedIcon /></div>
+                    </NavLink>
+
                 }
             </div>
-            {isFormOpen && <StartForm title={'Would you like to start a new game?'} closeModal={toggleForm} />}
 
         </section>
     )

@@ -13,6 +13,7 @@
     }
 
     main {
+        padding: 20px;
         height: calc(100vh - $header-height);
     }
 }
@@ -34,7 +35,6 @@
         }
 
         main {
-            padding: 20px;
             height: calc(100vh - $header-height - $footer-height);
         }
     }
