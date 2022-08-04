@@ -1,11 +1,10 @@
-import { BrowserRouter as Router, NavLink } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux"
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../store/action";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { MemberIcon } from "./member-icon";
-import { StartForm } from "../cmps/start-form";
 import React from "react";
 
 export const AppHeader = () => {
@@ -30,7 +29,6 @@ export const AppHeader = () => {
                     <NavLink className="icon-container" to="/start">
                         <div className="icon-container"><AccountCircleOutlinedIcon /></div>
                     </NavLink>
-
                 }
             </div>
 

@@ -28,12 +28,33 @@ export function CanvasDraw(props) {
     contextRef.current = context
   }
 
+  // const startDrawing = (ev) => {
+  //   const { offsetX, offsetY } = ev.nativeEvent;
+  //   console.log("🟡 ~ ev.nativeEvent", ev.nativeEvent)
+  //   console.log("🟡 ~ offsetY", offsetY)
+  //   console.log("🟡 ~ offsetX", offsetX)
+  //   contextRef.current.beginPath();
+  //   contextRef.current.moveTo(offsetX, offsetY);
+  //   isDrawing = true
+  //   const pos = getRelativePos(offsetX, offsetY)
+  //   socketService.emit('start-drawing', pos)
+  // }
+
   const startDrawing = (ev) => {
-    const { offsetX, offsetY } = ev.nativeEvent;
+    var posX, posY
+    if (ev.type === "touchstart") {
+      const { clientX, clientY } = ev.touches[0];
+      posX = clientX - 20
+      posY = clientY - 120
+    } else {
+      const { offsetX, offsetY } = ev.nativeEvent;
+      posX = offsetX
+      posY = offsetY
+    }
     contextRef.current.beginPath();
-    contextRef.current.moveTo(offsetX, offsetY);
+    contextRef.current.moveTo(posX, posY);
     isDrawing = true
-    const pos = getRelativePos(offsetX, offsetY)
+    const pos = getRelativePos(posX, posY)
     socketService.emit('start-drawing', pos)
   }
 
