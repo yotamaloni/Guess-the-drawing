@@ -4,14 +4,11 @@ import { StartForm } from "../cmps/start-form";
 
 export const AppHome = () => {
 
-    useEffect(() => {
-    }, [])
     const [isFormOpen, setIsFormOpen] = useState(false)
 
     const onToggleForm = () => {
         setIsFormOpen(!isFormOpen)
     }
-
 
     return (
         <section className="app-home">
@@ -29,7 +26,7 @@ export const AppHome = () => {
             <div className="img-container">
                 ?
             </div>
-            {isFormOpen && <StartForm closeModal={onToggleForm} title={'Come on - Let\'s start'} />}
+            {isFormOpen && <StartForm closeModal={onToggleForm} isModal={true} />}
         </section>
     )
 } 

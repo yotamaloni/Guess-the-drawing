@@ -13,7 +13,6 @@ export function CanvasDraw(props) {
     removeEventEraseDrawing = eventBusService.on('erase-drawing', clearCanvas)
     return () => {
       removeEventEraseDrawing()
-
     }
   }, [])
 
@@ -28,29 +27,8 @@ export function CanvasDraw(props) {
     contextRef.current = context
   }
 
-  // const startDrawing = (ev) => {
-  //   const { offsetX, offsetY } = ev.nativeEvent;
-  //   console.log("🟡 ~ ev.nativeEvent", ev.nativeEvent)
-  //   console.log("🟡 ~ offsetY", offsetY)
-  //   console.log("🟡 ~ offsetX", offsetX)
-  //   contextRef.current.beginPath();
-  //   contextRef.current.moveTo(offsetX, offsetY);
-  //   isDrawing = true
-  //   const pos = getRelativePos(offsetX, offsetY)
-  //   socketService.emit('start-drawing', pos)
-  // }
-
   const startDrawing = (ev) => {
-    var posX, posY
-    if (ev.type === "touchstart") {
-      const { clientX, clientY } = ev.touches[0];
-      posX = clientX - 20
-      posY = clientY - 120
-    } else {
-      const { offsetX, offsetY } = ev.nativeEvent;
-      posX = offsetX
-      posY = offsetY
-    }
+    const { posX, posY } = getPositionFromEv(ev)
     contextRef.current.beginPath();
     contextRef.current.moveTo(posX, posY);
     isDrawing = true
@@ -63,16 +41,7 @@ export function CanvasDraw(props) {
     if (!isDrawing) {
       return;
     }
-    var posX, posY
-    if (ev.type === "touchmove") {
-      const { clientX, clientY } = ev.touches[0];
-      posX = clientX - 20
-      posY = clientY - 120
-    } else {
-      const { offsetX, offsetY } = ev.nativeEvent;
-      posX = offsetX
-      posY = offsetY
-    }
+    const { posX, posY } = getPositionFromEv(ev)
     contextRef.current.lineTo(posX, posY);
     contextRef.current.stroke();
     const pos = getRelativePos(posX, posY)
@@ -92,6 +61,21 @@ export function CanvasDraw(props) {
     context.fillStyle = "#FFF"
     context.fillRect(0, 0, canvas.width, canvas.height)
     socketService.emit('clear-canvas')
+  }
+
+
+  const getPositionFromEv = (ev) => {
+    var posX, posY
+    if (ev.type === "touchmove" || ev.type == "touchstart") {
+      const { clientX, clientY } = ev.touches[0];
+      posX = clientX - 20
+      posY = clientY - 120
+    } else {
+      const { offsetX, offsetY } = ev.nativeEvent;
+      posX = offsetX
+      posY = offsetY
+    }
+    return { posX, posY }
   }
 
   const getRelativePos = (offsetX, offsetY) => {

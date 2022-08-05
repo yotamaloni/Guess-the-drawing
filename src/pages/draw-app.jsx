@@ -2,13 +2,12 @@ import React from 'react'
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from "react-redux"
-import { bindActionCreators } from "redux";
-import { actionCreators } from "../store/action"
+// import { bindActionCreators } from "redux";
+// import { actionCreators } from "../store/action"
 import { eventBusService } from '../services/event-bus.service.js';
 import { socketService } from '../services/socket.service.js'
 import { gameService } from '../services/game.service.js'
 import { CanvasDraw } from '../cmps/canvas-draw';
-import { StartForm } from "../cmps/start-form";
 import { CanvasGuess } from '../cmps/canvas-guess.jsx';
 import { useForm } from "../hooks/useForm"
 
@@ -92,7 +91,6 @@ export const DrawApp = () => {
             socketService.emit('player-won', gameId)
             eventBusService.emit('user-msg', { txt: 'You WIN!', class: 'success' })
             navigate('/start')
-            // setGameDone(true)
         } else {
             eventBusService.emit('user-msg', { txt: 'Wrong..TRY AGAIN', class: 'danger' })
         }
