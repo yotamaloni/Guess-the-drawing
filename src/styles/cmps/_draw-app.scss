@@ -56,18 +56,14 @@
         display: flex;
         justify-self: center;
         align-self: center;
+
     }
 
-    .actions {
+    .actions{
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 60px;
-
-        input {
-            margin-inline-end: 10px;
-        }
-
+        margin-top: 20px;
     }
 
     .word-list {
@@ -78,6 +74,7 @@
         font-size: 1rem;
         flex-wrap: wrap;
         margin-top: 20px;
+        height: auto;
 
         >* {
             display: flex;

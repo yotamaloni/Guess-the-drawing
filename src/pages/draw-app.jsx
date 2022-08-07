@@ -22,6 +22,7 @@ export const DrawApp = () => {
     const [chosenWord, setChosenWord] = useState(null)
     const [isWon, setIsWon] = useState(false)
     const [attempt, setAttempt] = useState(3)
+    const [isDisable, setIsDisable] = useState(false)
     var timeoutId = null
 
 
@@ -30,6 +31,7 @@ export const DrawApp = () => {
         addEventListenerByGame()
 
         socketService.on('player-leave', async () => {
+            if (!isWon && attempt > 0) return
             eventBusService.emit('user-msg', { txt: 'Player Left - Game over', class: 'danger' })
             setTimeout(() => {
                 navigate(`/start`);
@@ -38,21 +40,22 @@ export const DrawApp = () => {
 
         socketService.on('player-won', () => {
             eventBusService.emit('user-msg', { txt: 'Player guess won', class: 'success' })
+            setIsWon(true)
             setTimeout(() => {
                 navigate(`/start`);
-            }, 1000);
+            }, 3000);
         })
         socketService.on('player-lost', () => {
             eventBusService.emit('user-msg', { txt: 'The other player run out all the attempts', class: 'danger' })
             setTimeout(() => {
                 navigate(`/start`);
-            }, 1000);
+            }, 3000);
         })
 
         return () => {
             removeGame(gameId)
             socketService.off('player-leave')
-            if (!isWon && attempt > 0) socketService.emit('player-leave')
+            socketService.emit('player-leave')
             socketService.off('player-in')
             socketService.off('player-won')
             socketService.off('player-lost')
@@ -82,16 +85,18 @@ export const DrawApp = () => {
     }
 
     const onEraseCanvas = () => {
+        if (isDisable) return
         eventBusService.emit('erase-drawing')
     }
 
 
     const onWordClick = (word) => {
+        if (isDisable) return
         setChosenWord(word)
-
         if (word === game.word) {
+            setIsDisable(true)
             setWordClass('success')
-            setIsWon(true)
+            setIsWon(isWon => true)
             socketService.emit('player-won', gameId)
             eventBusService.emit('user-msg', { txt: 'You WIN!', class: 'success' })
             setTimeout(() => {
@@ -100,8 +105,9 @@ export const DrawApp = () => {
         } else {
             setWordClass('wrong')
             if (attempt === 1) {
+                setIsDisable(true)
                 eventBusService.emit('user-msg', { txt: 'You have run out of attempts', class: 'danger' })
-                socketService.emit('player-lost')
+                socketService.emit('player-lost', gameId)
                 setAttempt(attempt => attempt - 1)
                 setTimeout(() => {
                     navigate('/start')
@@ -115,22 +121,21 @@ export const DrawApp = () => {
             clearTimeout(timeoutId)
             setWordClass('')
             setChosenWord(null)
-        }, 1000);
+        }, 3000);
 
     }
 
     const onTimesUp = () => {
+        setIsDisable(true)
         eventBusService.emit('user-msg', { txt: 'Sorry, time is up', class: 'danger' })
+        setTimeout(() => {
+            navigate('/start')
+        }, 3000);
     }
 
     if (!isStart) return (
         <section className="draw-app">
             <h2 className='wait-title'>Wait for another player to join you</h2>
-        </section>
-    )
-    if (attempt === 0) return (
-        <section className="draw-app">
-            <h2 className='wait-title'>Sorry, You have run out of attempts</h2>
         </section>
     )
     return (
@@ -140,7 +145,7 @@ export const DrawApp = () => {
                     <div className='header'>
                         <h2 className='word-description'>Your word is <span>{game?.word}</span></h2>
                         <div className='timer-container'>
-                            <Timer timesUp={onTimesUp} />
+                            <Timer timesUp={onTimesUp} secondsAmount={60} />
                         </div>
 
                     </div>
@@ -158,7 +163,7 @@ export const DrawApp = () => {
                             Attempts left: <span>{attempt}</span>
                         </h3>
                         <div className='timer-container'>
-                            <Timer timesUp={onTimesUp} />
+                            <Timer timesUp={onTimesUp} secondsAmount={60} />
                         </div>
                     </div>
                     <div className='canvas-container'>

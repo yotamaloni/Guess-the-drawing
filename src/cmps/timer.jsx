@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 
 export const Timer = (props) => {
-    const [seconds, setSeconds] = useState(30);
+    const [seconds, setSeconds] = useState(props.secondsAmount);
     const [timerClass, setTimerClass] = useState('')
     var intervalId = null;
 

@@ -12,14 +12,14 @@ import CircularIndeterminate from '../cmps/loader.jsx'
 export const StartForm = (props) => {
 
     const navigate = useNavigate();
-    const inputRef = useRef(null);
+    const inputRefUser = useRef(null);
+    const inputRefLevel = useRef(null);
 
     const [username, setUsername] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const user = useSelector((state) => state.user)
     const dispatch = useDispatch()
     const { setUser, setGameDone } = bindActionCreators(actionCreators, dispatch)
-
 
     const updateUsername = (value) => {
         setUsername(value.username)
@@ -30,7 +30,7 @@ export const StartForm = (props) => {
 
     const onPlayerEnter = async (type) => {
         if (!username) {
-            inputRef.current.focus()
+            inputRefUser.current.focus()
             return
         }
         try {
@@ -60,7 +60,7 @@ export const StartForm = (props) => {
             <h3> Come on, Let's start!</h3>
             <form onSubmit={(ev) => ev.preventDefault()}>
                 <label >
-                    <input ref={inputRef} {...register('username', undefined, 'Enter username...')} />
+                    <input ref={inputRefUser} {...register('username', undefined, 'Enter username...')} />
                 </label>
             </form >
             <div className='actions'>
