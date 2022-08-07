@@ -30,6 +30,7 @@
         display: flex;
         justify-self: center;
         align-self: center;
+        margin-bottom: 20px;
     }
 
     .actions {
@@ -42,5 +43,42 @@
             margin-inline-end: 10px;
         }
 
+    }
+
+    .word-list {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-wrap: wrap;
+
+        >* {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            padding: 0 5px;
+            width: 100px;
+            background-color: $clr5;
+            color: #FFF;
+            font-weight: 600;
+            border-radius: 3px;
+            text-transform: capitalize;
+            cursor: pointer;
+            transition: background-color, 0.2s;
+
+            &:hover {
+                background-color: lighten($color: $clr5, $amount: 10%)
+            }
+
+            &.success {
+                background-color: $clr3;
+            }
+
+            &.wrong {
+                background-color: $clr1;
+            }
+        }
     }
 }

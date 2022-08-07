@@ -24,6 +24,9 @@ export const DrawApp = () => {
     const [isStart, setIsStart] = useState(false)
     const [game, setGame] = useState(null)
     const [word, setWord] = useState('')
+    const [wordClass, setWordClass] = useState('')
+    const [chosenWord, setChosenWord] = useState(null)
+    var timeoutId = null
 
 
     useEffect(() => {
@@ -35,13 +38,15 @@ export const DrawApp = () => {
         socketService.on('player-leave', async () => {
             eventBusService.emit('user-msg', { txt: 'Player Left - Game over', class: 'danger' })
             setTimeout(() => {
-                navigate(`/`);
+                navigate(`/start`);
             }, 3000);
         })
 
         socketService.on('player-won', () => {
             eventBusService.emit('user-msg', { txt: 'Player guess won', class: 'success' })
-            navigate(`/start`);
+            setTimeout(() => {
+                navigate(`/start`);
+            }, 1000);
 
         })
 
@@ -51,6 +56,7 @@ export const DrawApp = () => {
             socketService.emit('player-leave')
             socketService.off('player-in')
             socketService.off('player-won')
+            clearTimeout(timeoutId)
         }
     }, [navigate]);
 
@@ -85,26 +91,28 @@ export const DrawApp = () => {
 
     }
 
-    const onSubmitWord = (ev) => {
-        ev.preventDefault()
-        if (word.toLocaleLowerCase() === game.word) {
+    const onWordClick = (word) => {
+        setChosenWord(word)
+
+        if (word === game.word) {
+            setWordClass('success')
             socketService.emit('player-won', gameId)
             eventBusService.emit('user-msg', { txt: 'You WIN!', class: 'success' })
-            navigate('/start')
+            setTimeout(() => {
+                navigate('/start')
+            }, 1000);
         } else {
+            setWordClass('wrong')
             eventBusService.emit('user-msg', { txt: 'Wrong..TRY AGAIN', class: 'danger' })
         }
+        timeoutId = setTimeout(() => {
+            clearTimeout(timeoutId)
+            setWordClass('')
+            setChosenWord(null)
+        }, 1000);
+
     }
 
-    const [register] = useForm({
-    }, updateWordGuess)
-
-
-    // if (isGameDone) return (
-    //     <section className="draw-app">
-    //         <StartForm />
-    //     </section>
-    // )
     if (!isStart) return (
         <section className="draw-app">
             <h2 className='wait-title'>WAIT UNTIL PLAYER TO JOIN YOU</h2>
@@ -127,15 +135,16 @@ export const DrawApp = () => {
                     <div className='canvas-container'>
                         <CanvasGuess isDrawer={true} />
                     </div>
-                    <form className='actions' onSubmit={(ev) => onSubmitWord(ev)}>
-                        <label >
-                            <input ref={inputRef} {...register('word', undefined, 'Enter your guess...')} />
-                        </label>
-                        <button className='done'>Submit</button>
-                    </form >
+                    <ul className='word-list clean-list'>
+                        {game.words.map((word) => {
+                            return <li className={chosenWord === word.txt ? wordClass : ''} key={word.id} onClick={() => onWordClick(word.txt)}>
+                                {word.txt}
+                            </li>
+                        })}
+                    </ul>
                 </React.Fragment>
             }
 
-        </section>
+        </section >
     )
 } 
