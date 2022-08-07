@@ -14,6 +14,8 @@ Redux hooks
 
 Sockets
 
+SASS
+
 ## What i tried to do
 
 Clean and elegant code
