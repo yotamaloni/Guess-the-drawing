@@ -36,6 +36,14 @@
 
         }
 
+        .attempt {
+            span {
+                text-decoration: underline;
+                color: red;
+                text-transform: capitalize;
+            }
+        }
+
     }
 
 

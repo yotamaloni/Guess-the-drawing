@@ -21,13 +21,12 @@ export const DrawApp = () => {
     const [wordClass, setWordClass] = useState('')
     const [chosenWord, setChosenWord] = useState(null)
     const [isWon, setIsWon] = useState(false)
+    const [attempt, setAttempt] = useState(3)
     var timeoutId = null
 
 
     useEffect(() => {
-
         socketService.emit('game-watch', gameId)
-
         addEventListenerByGame()
 
         socketService.on('player-leave', async () => {
@@ -43,13 +42,20 @@ export const DrawApp = () => {
                 navigate(`/start`);
             }, 1000);
         })
+        socketService.on('player-lost', () => {
+            eventBusService.emit('user-msg', { txt: 'The other player run out all the attempts', class: 'danger' })
+            setTimeout(() => {
+                navigate(`/start`);
+            }, 1000);
+        })
 
         return () => {
             removeGame(gameId)
             socketService.off('player-leave')
-            if (!isWon) socketService.emit('player-leave')
+            if (!isWon && attempt > 0) socketService.emit('player-leave')
             socketService.off('player-in')
             socketService.off('player-won')
+            socketService.off('player-lost')
             clearTimeout(timeoutId)
         }
     }, [navigate]);
@@ -79,11 +85,6 @@ export const DrawApp = () => {
         eventBusService.emit('erase-drawing')
     }
 
-    const updateWordGuess = (value) => {
-        if (!game) return
-        setWord(value.word)
-
-    }
 
     const onWordClick = (word) => {
         setChosenWord(word)
@@ -98,7 +99,17 @@ export const DrawApp = () => {
             }, 1000);
         } else {
             setWordClass('wrong')
-            eventBusService.emit('user-msg', { txt: 'Wrong..TRY AGAIN', class: 'danger' })
+            if (attempt === 1) {
+                eventBusService.emit('user-msg', { txt: 'You have run out of attempts', class: 'danger' })
+                socketService.emit('player-lost')
+                setAttempt(attempt => attempt - 1)
+                setTimeout(() => {
+                    navigate('/start')
+                }, 3000);
+            } else {
+                eventBusService.emit('user-msg', { txt: 'Wrong..TRY AGAIN', class: 'danger' })
+                setAttempt(attempt => attempt - 1)
+            }
         }
         timeoutId = setTimeout(() => {
             clearTimeout(timeoutId)
@@ -110,14 +121,16 @@ export const DrawApp = () => {
 
     const onTimesUp = () => {
         eventBusService.emit('user-msg', { txt: 'Sorry, time is up', class: 'danger' })
-        // setTimeout(() => {
-        //     navigate('/start')
-        // }, 1000);
     }
 
     if (!isStart) return (
         <section className="draw-app">
-            <h2 className='wait-title'>WAIT UNTIL PLAYER TO JOIN YOU</h2>
+            <h2 className='wait-title'>Wait for another player to join you</h2>
+        </section>
+    )
+    if (attempt === 0) return (
+        <section className="draw-app">
+            <h2 className='wait-title'>Sorry, You have run out of attempts</h2>
         </section>
     )
     return (
@@ -129,17 +142,21 @@ export const DrawApp = () => {
                         <div className='timer-container'>
                             <Timer timesUp={onTimesUp} />
                         </div>
+
                     </div>
                     <div className='canvas-container'>
                         <CanvasDraw isDrawer={true} />
                     </div>
                     <div className='actions'>
-                        <button onClick={onEraseCanvas} className="delete">Erase</button>
+                        <button onClick={onEraseCanvas} className="delete">Clear canvas</button>
                     </div>
                 </React.Fragment>
                 :
                 <React.Fragment>
                     <div className='header'>
+                        <h3 className='attempt'>
+                            Attempts left: <span>{attempt}</span>
+                        </h3>
                         <div className='timer-container'>
                             <Timer timesUp={onTimesUp} />
                         </div>
