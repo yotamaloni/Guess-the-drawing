@@ -1,7 +1,6 @@
 import React from 'react'
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'
-import { useSelector, useDispatch } from "react-redux"
 // import { bindActionCreators } from "redux";
 // import { actionCreators } from "../store/action"
 import { eventBusService } from '../services/event-bus.service.js';
@@ -9,23 +8,19 @@ import { socketService } from '../services/socket.service.js'
 import { gameService } from '../services/game.service.js'
 import { CanvasDraw } from '../cmps/canvas-draw';
 import { CanvasGuess } from '../cmps/canvas-guess.jsx';
-import { useForm } from "../hooks/useForm"
-
-
+import { Timer } from '../cmps/timer.jsx';
 
 export const DrawApp = () => {
+
     const inputRef = useRef(null);
     const navigate = useNavigate();
     const { gameId, type } = useParams()
-    const dispatch = useDispatch()
-    // const isGameDone = useSelector((state) => state.isGameDone)
-    // const { setGameDone } = bindActionCreators(actionCreators, dispatch)
-
     const [isStart, setIsStart] = useState(false)
     const [game, setGame] = useState(null)
     const [word, setWord] = useState('')
     const [wordClass, setWordClass] = useState('')
     const [chosenWord, setChosenWord] = useState(null)
+    const [isWon, setIsWon] = useState(false)
     var timeoutId = null
 
 
@@ -47,13 +42,12 @@ export const DrawApp = () => {
             setTimeout(() => {
                 navigate(`/start`);
             }, 1000);
-
         })
 
         return () => {
             removeGame(gameId)
             socketService.off('player-leave')
-            socketService.emit('player-leave')
+            if (!isWon) socketService.emit('player-leave')
             socketService.off('player-in')
             socketService.off('player-won')
             clearTimeout(timeoutId)
@@ -96,6 +90,7 @@ export const DrawApp = () => {
 
         if (word === game.word) {
             setWordClass('success')
+            setIsWon(true)
             socketService.emit('player-won', gameId)
             eventBusService.emit('user-msg', { txt: 'You WIN!', class: 'success' })
             setTimeout(() => {
@@ -113,6 +108,13 @@ export const DrawApp = () => {
 
     }
 
+    const onTimesUp = () => {
+        eventBusService.emit('user-msg', { txt: 'Sorry, time is up', class: 'danger' })
+        // setTimeout(() => {
+        //     navigate('/start')
+        // }, 1000);
+    }
+
     if (!isStart) return (
         <section className="draw-app">
             <h2 className='wait-title'>WAIT UNTIL PLAYER TO JOIN YOU</h2>
@@ -122,7 +124,12 @@ export const DrawApp = () => {
         <section className="draw-app">
             {type === 'draw' ?
                 <React.Fragment>
-                    <h2 className='word-description'>Your word is <span>{game?.word}</span></h2>
+                    <div className='header'>
+                        <h2 className='word-description'>Your word is <span>{game?.word}</span></h2>
+                        <div className='timer-container'>
+                            <Timer timesUp={onTimesUp} />
+                        </div>
+                    </div>
                     <div className='canvas-container'>
                         <CanvasDraw isDrawer={true} />
                     </div>
@@ -132,6 +139,11 @@ export const DrawApp = () => {
                 </React.Fragment>
                 :
                 <React.Fragment>
+                    <div className='header'>
+                        <div className='timer-container'>
+                            <Timer timesUp={onTimesUp} />
+                        </div>
+                    </div>
                     <div className='canvas-container'>
                         <CanvasGuess isDrawer={true} />
                     </div>
