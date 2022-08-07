@@ -48,8 +48,10 @@ export const StartForm = (props) => {
         }
     }
     if (isLoading) return (
-        <div className='loader-page' >
-            <CircularIndeterminate />
+        <div className="start-form loader-container">
+            <div className='loader' >
+                <CircularIndeterminate />
+            </div>
         </div>
     )
     return (
